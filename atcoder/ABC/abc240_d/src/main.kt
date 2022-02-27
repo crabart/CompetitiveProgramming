@@ -2,32 +2,40 @@ fun next() = readLine()!!
 fun nextInt() = next().toInt()
 fun nextIntList() = next().split(" ").map{ it.toInt() }
 
+@kotlin.ExperimentalStdlibApi
 fun main() {
     val n = nextInt()
     val l = nextIntList()
 
-    var ml = mutableListOf<Int>()
+    var ml = mutableListOf<MutablePair<Int, Int>>()
 
+    var stackNum = 0
     for (i in l) {
-        ml.add(i)
+        if (ml.isEmpty()) {
+            ml.add(MutablePair(i, 1))
+            stackNum = 1
+        }
+        else if (ml.last().first == i){
+            ml.last().second++
+            stackNum++
 
-        var isSame = true
-        for (j in 1..i) {
-            val tmp = ml.size - j
-            if (tmp < 0) {
-                isSame = false
-                break
-            }
-            if (i != ml[tmp]) {
-                isSame = false
-                break
+            if (ml.last().second >= i) {
+                ml.removeLast()
+                stackNum -= i
             }
         }
-
-        if (isSame) {
-            ml = ml.subList(0, ml.size - i)
+        else {
+            ml.add(MutablePair(i, 1))
+            stackNum++
         }
 
-        println(ml.size)
+        println(stackNum)
+    }
+}
+
+class MutablePair<T, U>(var first: T, var second: U) {
+    fun add(a : T, b: U){
+        first = a
+        second = b
     }
 }
